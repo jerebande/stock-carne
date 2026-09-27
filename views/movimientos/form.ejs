@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<div class="card" style="max-width:600px;">
+  <h2 style="margin-top:0;">Nuevo movimiento de stock</h2>
+  <form method="POST" action="/movimientos">
+    <div class="form-group">
+      <label>Producto</label>
+      <select name="producto_id" required>
+        <option value="">Seleccioná un producto</option>
+        <% productos.forEach(p => { %>
+          <option value="<%= p.id %>">
+            <%= p.nombre %> (stock actual: <%= p.stock_actual %> <%= p.unidad %>)
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo de movimiento</label>
+        <select name="tipo" required>
+          <option value="entrada">Entrada (compra / reposición)</option>
+          <option value="salida">Salida (venta)</option>
+          <option value="merma">Merma (pérdida / descarte)</option>
+          <option value="ajuste">Ajuste (fijar stock exacto)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" step="0.01" name="cantidad" required min="0.01">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Motivo / nota (opcional)</label>
+      <input type="text" name="motivo" placeholder="Ej: compra a proveedor, venta mostrador...">
+    </div>
+
+    <button type="submit" class="btn">Registrar movimiento</button>
+    <a href="/movimientos" class="btn secundario">Cancelar</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

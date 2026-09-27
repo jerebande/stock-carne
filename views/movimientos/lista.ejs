@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+
+<div class="toolbar">
+  <h2 style="margin:0;">Movimientos de stock</h2>
+  <a href="/movimientos/nuevo" class="btn">+ Nuevo movimiento</a>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th><th>Usuario</th></tr>
+    </thead>
+    <tbody>
+      <% movimientos.forEach(m => { %>
+        <tr>
+          <td><%= new Date(m.fecha).toLocaleString('es-AR') %></td>
+          <td><%= m.producto_nombre %></td>
+          <td><span class="badge <%= m.tipo %>"><%= m.tipo %></span></td>
+          <td><%= m.cantidad %> <%= m.unidad %></td>
+          <td><%= m.motivo || '-' %></td>
+          <td><%= m.usuario_nombre || '-' %></td>
+        </tr>
+      <% }) %>
+      <% if (movimientos.length === 0) { %>
+        <tr><td colspan="6" style="text-align:center;color:#6b615a;">Todavía no hay movimientos.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

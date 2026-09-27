@@ -1,0 +1,15 @@
+<%- include('../partials/header') %>
+
+<div class="card" style="max-width:480px;">
+  <h2 style="margin-top:0;"><%= categoria ? 'Editar categoría' : 'Nueva categoría' %></h2>
+  <form method="POST" action="<%= categoria ? `/categorias/${categoria.id}?_method=PUT` : '/categorias' %>">
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" name="nombre" required value="<%= categoria ? categoria.nombre : '' %>">
+    </div>
+    <button type="submit" class="btn">Guardar</button>
+    <a href="/categorias" class="btn secundario">Cancelar</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

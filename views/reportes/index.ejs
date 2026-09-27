@@ -1,0 +1,88 @@
+<%- include('../partials/header') %>
+
+<h2>Reportes de movimientos</h2>
+
+<div class="card">
+  <form method="GET" class="filtros" style="flex-wrap:wrap;">
+    <div class="form-group" style="margin-bottom:0;">
+      <label>Desde</label>
+      <input type="date" name="desde" value="<%= filtros.desde %>">
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>Hasta</label>
+      <input type="date" name="hasta" value="<%= filtros.hasta %>">
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>Producto</label>
+      <select name="producto_id">
+        <option value="">Todos</option>
+        <% productos.forEach(p => { %>
+          <option value="<%= p.id %>" <%= String(filtros.producto_id) === String(p.id) ? 'selected' : '' %>><%= p.nombre %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>Tipo</label>
+      <select name="tipo">
+        <option value="">Todos</option>
+        <option value="entrada" <%= filtros.tipo === 'entrada' ? 'selected' : '' %>>Entrada</option>
+        <option value="salida" <%= filtros.tipo === 'salida' ? 'selected' : '' %>>Salida</option>
+        <option value="merma" <%= filtros.tipo === 'merma' ? 'selected' : '' %>>Merma</option>
+        <option value="ajuste" <%= filtros.tipo === 'ajuste' ? 'selected' : '' %>>Ajuste</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:0; align-self:flex-end;">
+      <button type="submit" class="btn">Generar reporte</button>
+    </div>
+  </form>
+</div>
+
+<% if (buscado) { %>
+  <div class="grid-stats">
+    <div class="card stat">
+      <div class="num"><%= totales.entradas.toFixed(2) %></div>
+      <div class="label">Total entradas</div>
+    </div>
+    <div class="card stat">
+      <div class="num"><%= totales.salidas.toFixed(2) %></div>
+      <div class="label">Total salidas</div>
+    </div>
+    <div class="card stat">
+      <div class="num"><%= totales.mermas.toFixed(2) %></div>
+      <div class="label">Total mermas</div>
+    </div>
+    <div class="card stat">
+      <div class="num"><%= totales.ajustes %></div>
+      <div class="label">Ajustes realizados</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th><th>Usuario</th></tr>
+      </thead>
+      <tbody>
+        <% movimientos.forEach(m => { %>
+          <tr>
+            <td><%= new Date(m.fecha).toLocaleString('es-AR') %></td>
+            <td><%= m.producto_nombre %></td>
+            <td><span class="badge <%= m.tipo %>"><%= m.tipo %></span></td>
+            <td><%= m.cantidad %> <%= m.unidad %></td>
+            <td><%= m.motivo || '-' %></td>
+            <td><%= m.usuario_nombre || '-' %></td>
+          </tr>
+        <% }) %>
+        <% if (movimientos.length === 0) { %>
+          <tr><td colspan="6" style="text-align:center;color:#6b615a;">No hay movimientos para los filtros elegidos.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<% } else { %>
+  <div class="card">
+    <p style="color:#6b615a;">Elegí un rango de fechas o algún filtro y hacé clic en "Generar reporte".</p>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

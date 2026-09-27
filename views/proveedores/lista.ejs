@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+
+<div class="toolbar">
+  <h2 style="margin:0;">Proveedores</h2>
+  <a href="/proveedores/nuevo" class="btn">+ Nuevo proveedor</a>
+</div>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Nombre</th><th>Teléfono</th><th>Notas</th><th></th></tr></thead>
+    <tbody>
+      <% proveedores.forEach(p => { %>
+        <tr>
+          <td><%= p.nombre %></td>
+          <td><%= p.telefono || '-' %></td>
+          <td><%= p.notas || '-' %></td>
+          <td>
+            <a href="/proveedores/<%= p.id %>/editar" class="btn secundario" style="padding:0.3rem 0.7rem;">Editar</a>
+            <form action="/proveedores/<%= p.id %>?_method=DELETE" method="POST" class="inline"
+                  onsubmit="return confirm('¿Eliminar este proveedor?');">
+              <button type="submit" class="btn peligro" style="padding:0.3rem 0.7rem;">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (proveedores.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;color:#6b615a;">No hay proveedores cargados.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

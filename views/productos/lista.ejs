@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+
+<div class="toolbar">
+  <h2 style="margin:0;">Productos</h2>
+  <a href="/productos/nuevo" class="btn">+ Nuevo producto</a>
+</div>
+
+<div class="card">
+  <form method="GET" class="filtros" style="margin-bottom:1rem;">
+    <input type="text" name="q" placeholder="Buscar por nombre..." value="<%= q || '' %>">
+    <select name="categoria">
+      <option value="">Todas las categorías</option>
+      <% categorias.forEach(c => { %>
+        <option value="<%= c.id %>" <%= String(categoria) === String(c.id) ? 'selected' : '' %>><%= c.nombre %></option>
+      <% }) %>
+    </select>
+    <button type="submit" class="btn secundario">Filtrar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th><th>Categoría</th><th>Stock</th><th>Mínimo</th>
+        <th>Precio costo</th><th>Precio venta</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% productos.forEach(p => { %>
+        <tr>
+          <td><%= p.nombre %></td>
+          <td><%= p.categoria_nombre || '-' %></td>
+          <td>
+            <% if (Number(p.stock_actual) <= Number(p.stock_minimo)) { %>
+              <span class="badge bajo"><%= p.stock_actual %> <%= p.unidad %></span>
+            <% } else { %>
+              <%= p.stock_actual %> <%= p.unidad %>
+            <% } %>
+          </td>
+          <td><%= p.stock_minimo %> <%= p.unidad %></td>
+          <td>$<%= Number(p.precio_costo).toFixed(2) %></td>
+          <td>$<%= Number(p.precio_venta).toFixed(2) %></td>
+          <td>
+            <a href="/productos/<%= p.id %>/editar" class="btn secundario" style="padding:0.3rem 0.7rem;">Editar</a>
+            <% if (usuario.rol === 'admin') { %>
+              <form action="/productos/<%= p.id %>?_method=DELETE" method="POST" class="inline"
+                    onsubmit="return confirm('¿Eliminar este producto?');">
+                <button type="submit" class="btn peligro" style="padding:0.3rem 0.7rem;">Eliminar</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (productos.length === 0) { %>
+        <tr><td colspan="7" style="text-align:center;color:#6b615a;">No se encontraron productos.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>
