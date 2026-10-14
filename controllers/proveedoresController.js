@@ -2,7 +2,7 @@ const Proveedor = require('../models/Proveedor');
 
 const proveedoresController = {
   async listar(req, res) {
-    const proveedores = await Proveedor.listarTodos();
+    const proveedores = await Proveedor.listarTodos(req.session.usuario.id);
     res.render('proveedores/lista', { proveedores });
   },
 
@@ -12,7 +12,7 @@ const proveedoresController = {
 
   async crear(req, res) {
     try {
-      await Proveedor.crear(req.body);
+      await Proveedor.crear(req.body, req.session.usuario.id);
       req.flash('success', 'Proveedor creado.');
     } catch (err) {
       console.error(err);
@@ -22,7 +22,7 @@ const proveedoresController = {
   },
 
   async formEditar(req, res) {
-    const proveedor = await Proveedor.buscarPorId(req.params.id);
+    const proveedor = await Proveedor.buscarPorId(req.params.id, req.session.usuario.id);
     if (!proveedor) {
       req.flash('error', 'Proveedor no encontrado.');
       return res.redirect('/proveedores');
@@ -32,7 +32,7 @@ const proveedoresController = {
 
   async actualizar(req, res) {
     try {
-      await Proveedor.actualizar(req.params.id, req.body);
+      await Proveedor.actualizar(req.params.id, req.body, req.session.usuario.id);
       req.flash('success', 'Proveedor actualizado.');
     } catch (err) {
       console.error(err);
@@ -43,7 +43,7 @@ const proveedoresController = {
 
   async eliminar(req, res) {
     try {
-      await Proveedor.eliminar(req.params.id);
+      await Proveedor.eliminar(req.params.id, req.session.usuario.id);
       req.flash('success', 'Proveedor eliminado. Los productos que lo usaban quedaron sin proveedor.');
     } catch (err) {
       console.error(err);

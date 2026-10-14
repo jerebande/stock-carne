@@ -6,14 +6,14 @@
 </div>
 
 <div class="card">
-  <table>
+  <div class="table-scroll"><table>
     <thead><tr><th>Nombre</th><th>Productos activos</th><th></th></tr></thead>
     <tbody>
       <% categorias.forEach(c => { %>
         <tr>
-          <td><%= c.nombre %></td>
-          <td><%= c.total_productos %></td>
-          <td>
+          <td data-label="Categoría"><strong><%= c.nombre %></strong></td>
+          <td data-label="Productos activos"><%= c.total_productos %></td>
+          <td data-label="Acciones" class="table-actions">
             <a href="/categorias/<%= c.id %>/editar" class="btn secundario" style="padding:0.3rem 0.7rem;">Editar</a>
             <form action="/categorias/<%= c.id %>?_method=DELETE" method="POST" class="inline"
                   onsubmit="return confirm('¿Eliminar esta categoría? Los productos que la usan quedarán sin categoría.');">
@@ -23,10 +23,10 @@
         </tr>
       <% }) %>
       <% if (categorias.length === 0) { %>
-        <tr><td colspan="3" style="text-align:center;color:#6b615a;">No hay categorías cargadas.</td></tr>
+        <tr class="table-empty"><td colspan="3">No hay categorías cargadas.</td></tr>
       <% } %>
     </tbody>
-  </table>
+  </table></div>
 </div>
 
 <%- include('../partials/footer') %>

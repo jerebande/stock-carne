@@ -3,12 +3,12 @@ const Movimiento = require('../models/Movimiento');
 
 const movimientosController = {
   async listar(req, res) {
-    const movimientos = await Movimiento.listar({ limite: 200 });
+    const movimientos = await Movimiento.listar(req.session.usuario.id, { limite: 200 });
     res.render('movimientos/lista', { movimientos });
   },
 
   async formNuevo(req, res) {
-    const productos = await Producto.listarActivosSimple();
+    const productos = await Producto.listarActivosSimple(req.session.usuario.id);
     res.render('movimientos/form', { productos });
   },
 
@@ -25,7 +25,7 @@ const movimientosController = {
     try {
       await conn.beginTransaction();
 
-      const producto = await Producto.buscarConBloqueo(conn, producto_id);
+      const producto = await Producto.buscarConBloqueo(conn, producto_id, req.session.usuario.id);
       if (!producto) throw new Error('Producto no encontrado');
 
       let nuevoStock;
@@ -35,7 +35,6 @@ const movimientosController = {
         nuevoStock = parseFloat(producto.stock_actual) - cant;
         if (nuevoStock < 0) {
           await conn.rollback();
-          conn.release();
           req.flash('error', `No hay suficiente stock de "${producto.nombre}" (disponible: ${producto.stock_actual} ${producto.unidad}).`);
           return res.redirect('/movimientos/nuevo');
         }
@@ -45,10 +44,11 @@ const movimientosController = {
         throw new Error('Tipo de movimiento inválido');
       }
 
-      await Producto.actualizarStock(conn, producto_id, nuevoStock);
+      await Producto.actualizarStock(conn, producto_id, nuevoStock, req.session.usuario.id);
       await Movimiento.crear(conn, {
         producto_id,
         usuario_id: req.session.usuario.id,
+        owner_id: req.session.usuario.id,
         tipo,
         cantidad: cant,
         motivo,

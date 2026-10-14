@@ -5,41 +5,43 @@ const Movimiento = {
     return pool.getConnection();
   },
 
-  async ultimos(limite = 10) {
+  async ultimos(ownerId, limite = 10) {
     const [rows] = await pool.query(
       `SELECT m.*, p.nombre AS producto_nombre, p.unidad, u.nombre AS usuario_nombre
        FROM movimientos m
        JOIN productos p ON p.id = m.producto_id
        LEFT JOIN usuarios u ON u.id = m.usuario_id
+       WHERE m.owner_id = ? AND p.owner_id = ?
        ORDER BY m.fecha DESC
        LIMIT ?`,
-      [limite]
+      [ownerId, ownerId, limite]
     );
     return rows;
   },
 
-  async listar({ limite = 200 } = {}) {
+  async listar(ownerId, { limite = 200 } = {}) {
     const [rows] = await pool.query(
       `SELECT m.*, p.nombre AS producto_nombre, p.unidad, u.nombre AS usuario_nombre
        FROM movimientos m
        JOIN productos p ON p.id = m.producto_id
        LEFT JOIN usuarios u ON u.id = m.usuario_id
+       WHERE m.owner_id = ? AND p.owner_id = ?
        ORDER BY m.fecha DESC
        LIMIT ?`,
-      [limite]
+      [ownerId, ownerId, limite]
     );
     return rows;
   },
 
   // Reporte por rango de fechas, con filtros opcionales de producto y tipo
-  async reporte({ desde, hasta, producto_id, tipo }) {
+  async reporte({ desde, hasta, producto_id, tipo }, ownerId) {
     let sql = `
       SELECT m.*, p.nombre AS producto_nombre, p.unidad, u.nombre AS usuario_nombre
       FROM movimientos m
       JOIN productos p ON p.id = m.producto_id
       LEFT JOIN usuarios u ON u.id = m.usuario_id
-      WHERE 1 = 1`;
-    const params = [];
+      WHERE m.owner_id = ? AND p.owner_id = ?`;
+    const params = [ownerId, ownerId];
     if (desde) {
       sql += ' AND m.fecha >= ?';
       params.push(`${desde} 00:00:00`);
@@ -61,11 +63,11 @@ const Movimiento = {
     return rows;
   },
 
-  async crear(conn, { producto_id, usuario_id, tipo, cantidad, motivo }) {
+  async crear(conn, { producto_id, usuario_id, owner_id, tipo, cantidad, motivo }) {
     await conn.query(
-      `INSERT INTO movimientos (producto_id, usuario_id, tipo, cantidad, motivo)
-       VALUES (?, ?, ?, ?, ?)`,
-      [producto_id, usuario_id, tipo, cantidad, motivo || null]
+      `INSERT INTO movimientos (producto_id, usuario_id, owner_id, tipo, cantidad, motivo)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [producto_id, usuario_id, owner_id, tipo, cantidad, motivo || null]
     );
   },
 };

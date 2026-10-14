@@ -2,7 +2,10 @@ const pool = require('../config/db');
 
 const Usuario = {
   async buscarPorUsuario(usuario) {
-    const [rows] = await pool.query('SELECT * FROM usuarios WHERE usuario = ?', [usuario]);
+    const [rows] = await pool.query(
+      'SELECT id, nombre, usuario, password_hash, rol FROM usuarios WHERE usuario = ?',
+      [usuario]
+    );
     return rows[0] || null;
   },
 

@@ -3,24 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8c1c13">
   <title>Control de Stock - Carnicería</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <% if (usuario) { %>
   <div class="navbar">
-    <a href="/" class="brand">🥩 Carnicería - Stock</a>
-    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <a href="/" class="brand">🥩 <span>Carnicería - Stock</span></a>
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-controls="navMenu" aria-expanded="false">☰</button>
     <nav id="navMenu">
       <a href="/" class="<%= path === '/' ? 'active' : '' %>">Panel</a>
       <a href="/productos" class="<%= path.startsWith('/productos') ? 'active' : '' %>">Productos</a>
       <a href="/movimientos" class="<%= path.startsWith('/movimientos') ? 'active' : '' %>">Movimientos</a>
       <a href="/reportes" class="<%= path.startsWith('/reportes') ? 'active' : '' %>">Reportes</a>
+      <a href="/asistente" class="<%= path.startsWith('/asistente') ? 'active' : '' %>">Asistente</a>
       <% if (usuario.rol === 'admin') { %>
         <a href="/categorias" class="<%= path.startsWith('/categorias') ? 'active' : '' %>">Categorías</a>
         <a href="/proveedores" class="<%= path.startsWith('/proveedores') ? 'active' : '' %>">Proveedores</a>
       <% } %>
-      <span class="usuario-info">👤 <%= usuario.nombre %> <% if (usuario.rol === 'admin') { %>(admin)<% } %></span>
+      <span class="usuario-info" title="<%= usuario.nombre %>">👤 <%= usuario.nombre %></span>
       <form action="/logout" method="POST" class="inline">
         <button type="submit" class="btn-salir">Salir</button>
       </form>

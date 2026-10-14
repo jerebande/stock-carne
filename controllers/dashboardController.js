@@ -2,20 +2,19 @@ const Producto = require('../models/Producto');
 const Movimiento = require('../models/Movimiento');
 
 const dashboardController = {
-  async mostrar(req, res) {
+  async mostrar(req, res, next) {
     try {
       const [total_productos, bajoStock, ultimosMovimientos, valor_stock] = await Promise.all([
-        Producto.contarActivos(),
-        Producto.conStockBajo(),
-        Movimiento.ultimos(10),
-        Producto.valorTotalStock(),
+        Producto.contarActivos(req.session.usuario.id),
+        Producto.conStockBajo(req.session.usuario.id),
+        Movimiento.ultimos(req.session.usuario.id, 10),
+        Producto.valorTotalStock(req.session.usuario.id),
       ]);
 
       res.render('dashboard', { total_productos, bajoStock, ultimosMovimientos, valor_stock });
     } catch (err) {
       console.error(err);
-      req.flash('error', 'Error al cargar el panel.');
-      res.render('dashboard', { total_productos: 0, bajoStock: [], ultimosMovimientos: [], valor_stock: 0 });
+      next(err);
     }
   },
 };

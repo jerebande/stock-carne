@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8c1c13">
+  <title>Crear cuenta - Control de Stock</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <a href="/registro" class="auth-brand">🥩 Crear cuenta</a>
+      <p class="auth-subtitle">Tu inventario y tus datos serán privados para tu cuenta.</p>
+      <% if (typeof error !== 'undefined' && error.length) { %>
+        <% error.forEach(msg => { %><div class="alert error"><%= msg %></div><% }) %>
+      <% } %>
+      <form action="/registro" method="POST">
+        <div class="form-group">
+          <label for="nombre">Tu nombre</label>
+          <input id="nombre" type="text" name="nombre" required minlength="2" maxlength="80" autocomplete="name" autofocus>
+        </div>
+        <div class="form-group">
+          <label for="usuario">Nombre de usuario</label>
+          <input id="usuario" type="text" name="usuario" required minlength="3" maxlength="30" pattern="[a-zA-Z0-9_.\-]+" autocomplete="username">
+          <small>Usá letras, números, punto, guion o guion bajo.</small>
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input id="password" type="password" name="password" required minlength="8" maxlength="72" autocomplete="new-password">
+          <small>Debe tener al menos 8 caracteres.</small>
+        </div>
+        <div class="form-group">
+          <label for="confirmar_password">Repetí la contraseña</label>
+          <input id="confirmar_password" type="password" name="confirmar_password" required minlength="8" maxlength="72" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn auth-submit">Crear cuenta</button>
+      </form>
+      <p class="auth-switch">¿Ya tenés cuenta? <a href="/login">Iniciar sesión</a></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -2,9 +2,11 @@ const Categoria = require('../models/Categoria');
 
 const categoriasController = {
   async listar(req, res) {
-    const categorias = await Categoria.listarTodas();
+    const categorias = await Categoria.listarTodas(req.session.usuario.id);
     // cantidad de productos por categoría, para mostrar y para avisar antes de borrar
-    const conteos = await Promise.all(categorias.map(c => Categoria.contarProductos(c.id)));
+    const conteos = await Promise.all(
+      categorias.map(c => Categoria.contarProductos(c.id, req.session.usuario.id))
+    );
     const categoriasConConteo = categorias.map((c, i) => ({ ...c, total_productos: conteos[i] }));
     res.render('categorias/lista', { categorias: categoriasConConteo });
   },
@@ -16,7 +18,7 @@ const categoriasController = {
   async crear(req, res) {
     const { nombre } = req.body;
     try {
-      await Categoria.crear(nombre);
+      await Categoria.crear(nombre, req.session.usuario.id);
       req.flash('success', 'Categoría creada.');
     } catch (err) {
       console.error(err);
@@ -26,7 +28,7 @@ const categoriasController = {
   },
 
   async formEditar(req, res) {
-    const categoria = await Categoria.buscarPorId(req.params.id);
+    const categoria = await Categoria.buscarPorId(req.params.id, req.session.usuario.id);
     if (!categoria) {
       req.flash('error', 'Categoría no encontrada.');
       return res.redirect('/categorias');
@@ -36,7 +38,7 @@ const categoriasController = {
 
   async actualizar(req, res) {
     try {
-      await Categoria.actualizar(req.params.id, req.body.nombre);
+      await Categoria.actualizar(req.params.id, req.body.nombre, req.session.usuario.id);
       req.flash('success', 'Categoría actualizada.');
     } catch (err) {
       console.error(err);
@@ -47,7 +49,7 @@ const categoriasController = {
 
   async eliminar(req, res) {
     try {
-      await Categoria.eliminar(req.params.id);
+      await Categoria.eliminar(req.params.id, req.session.usuario.id);
       req.flash('success', 'Categoría eliminada. Los productos que la usaban quedaron sin categoría.');
     } catch (err) {
       console.error(err);

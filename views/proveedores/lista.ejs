@@ -6,15 +6,15 @@
 </div>
 
 <div class="card">
-  <table>
+  <div class="table-scroll"><table>
     <thead><tr><th>Nombre</th><th>Teléfono</th><th>Notas</th><th></th></tr></thead>
     <tbody>
       <% proveedores.forEach(p => { %>
         <tr>
-          <td><%= p.nombre %></td>
-          <td><%= p.telefono || '-' %></td>
-          <td><%= p.notas || '-' %></td>
-          <td>
+          <td data-label="Proveedor"><strong><%= p.nombre %></strong></td>
+          <td data-label="Teléfono"><%= p.telefono || '-' %></td>
+          <td data-label="Notas"><%= p.notas || '-' %></td>
+          <td data-label="Acciones" class="table-actions">
             <a href="/proveedores/<%= p.id %>/editar" class="btn secundario" style="padding:0.3rem 0.7rem;">Editar</a>
             <form action="/proveedores/<%= p.id %>?_method=DELETE" method="POST" class="inline"
                   onsubmit="return confirm('¿Eliminar este proveedor?');">
@@ -24,10 +24,10 @@
         </tr>
       <% }) %>
       <% if (proveedores.length === 0) { %>
-        <tr><td colspan="4" style="text-align:center;color:#6b615a;">No hay proveedores cargados.</td></tr>
+        <tr class="table-empty"><td colspan="4">No hay proveedores cargados.</td></tr>
       <% } %>
     </tbody>
-  </table>
+  </table></div>
 </div>
 
 <%- include('../partials/footer') %>

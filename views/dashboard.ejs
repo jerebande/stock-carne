@@ -23,21 +23,21 @@
   <% if (bajoStock.length === 0) { %>
     <p style="color:#6b615a;">Todo el stock está por encima del mínimo. 👍</p>
   <% } else { %>
-    <table>
+    <div class="table-scroll"><table>
       <thead>
         <tr><th>Producto</th><th>Categoría</th><th>Stock actual</th><th>Mínimo</th></tr>
       </thead>
       <tbody>
         <% bajoStock.forEach(p => { %>
           <tr>
-            <td><%= p.nombre %></td>
-            <td><%= p.categoria_nombre || '-' %></td>
-            <td><span class="badge bajo"><%= p.stock_actual %> <%= p.unidad %></span></td>
-            <td><%= p.stock_minimo %> <%= p.unidad %></td>
+            <td data-label="Producto"><strong><%= p.nombre %></strong></td>
+            <td data-label="Categoría"><%= p.categoria_nombre || '-' %></td>
+            <td data-label="Stock actual"><span class="badge bajo"><%= p.stock_actual %> <%= p.unidad %></span></td>
+            <td data-label="Mínimo"><%= p.stock_minimo %> <%= p.unidad %></td>
           </tr>
         <% }) %>
       </tbody>
-    </table>
+    </table></div>
   <% } %>
 </div>
 
@@ -46,22 +46,22 @@
   <% if (ultimosMovimientos.length === 0) { %>
     <p style="color:#6b615a;">Todavía no hay movimientos registrados.</p>
   <% } else { %>
-    <table>
+    <div class="table-scroll"><table>
       <thead>
         <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Usuario</th></tr>
       </thead>
       <tbody>
         <% ultimosMovimientos.forEach(m => { %>
           <tr>
-            <td><%= new Date(m.fecha).toLocaleString('es-AR') %></td>
-            <td><%= m.producto_nombre %></td>
-            <td><span class="badge <%= m.tipo %>"><%= m.tipo %></span></td>
-            <td><%= m.cantidad %></td>
-            <td><%= m.usuario_nombre || '-' %></td>
+            <td data-label="Fecha"><%= new Date(m.fecha).toLocaleString('es-AR') %></td>
+            <td data-label="Producto"><strong><%= m.producto_nombre %></strong></td>
+            <td data-label="Tipo"><span class="badge <%= m.tipo %>"><%= m.tipo %></span></td>
+            <td data-label="Cantidad"><%= m.cantidad %></td>
+            <td data-label="Usuario"><%= m.usuario_nombre || '-' %></td>
           </tr>
         <% }) %>
       </tbody>
-    </table>
+    </table></div>
   <% } %>
 </div>
 

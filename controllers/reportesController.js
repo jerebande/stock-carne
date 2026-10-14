@@ -4,13 +4,16 @@ const Producto = require('../models/Producto');
 const reportesController = {
   async mostrar(req, res) {
     const { desde, hasta, producto_id, tipo } = req.query;
-    const productos = await Producto.listarActivosSimple();
+    const productos = await Producto.listarActivosSimple(req.session.usuario.id);
 
     let movimientos = [];
     let totales = { entradas: 0, salidas: 0, mermas: 0, ajustes: 0 };
 
     if (desde || hasta || producto_id || tipo) {
-      movimientos = await Movimiento.reporte({ desde, hasta, producto_id, tipo });
+      movimientos = await Movimiento.reporte(
+        { desde, hasta, producto_id, tipo },
+        req.session.usuario.id
+      );
       movimientos.forEach(m => {
         const cant = Number(m.cantidad);
         if (m.tipo === 'entrada') totales.entradas += cant;

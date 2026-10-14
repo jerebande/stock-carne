@@ -1,0 +1,101 @@
+<%- include('partials/header') %>
+
+<div class="assistant-heading">
+  <div>
+    <p class="eyebrow">IA PARA TU INVENTARIO</p>
+    <h1>Asistente inteligente</h1>
+    <p>Preguntá lo que necesitás y Groq analizará la información de tu cuenta.</p>
+  </div>
+  <% if (groqConfigured) { %>
+    <span class="assistant-private">⚡ IA conectada con Groq</span>
+  <% } else { %>
+    <span class="assistant-setup">Configurá GROQ_API_KEY para activar la IA</span>
+  <% } %>
+</div>
+
+<section class="assistant-panel" aria-label="Consultas del inventario">
+  <div class="assistant-messages" id="assistantMessages" aria-live="polite">
+    <div class="chat-message assistant-message">
+      <span class="chat-avatar" aria-hidden="true">🥩</span>
+      <div>
+        <strong>¡Hola, <%= usuario.nombre %>!</strong>
+        <p>Puedo analizar stock, buscar productos y resumir movimientos. Probá un ejemplo o escribí tu consulta.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="assistant-suggestions" aria-label="Consultas de ejemplo">
+    <button type="button" class="suggestion-chip">¿Qué productos tienen stock bajo?</button>
+    <button type="button" class="suggestion-chip">¿Qué movimientos hubo esta semana?</button>
+    <button type="button" class="suggestion-chip">Mostrame los últimos movimientos</button>
+  </div>
+
+  <form class="assistant-form" id="assistantForm">
+    <label class="sr-only" for="assistantQuestion">Escribí tu consulta</label>
+    <input id="assistantQuestion" name="pregunta" type="text" maxlength="300" placeholder="Ej.: ¿Cuánto stock queda de asado?" required autocomplete="off">
+    <button class="btn" type="submit" id="assistantSubmit">Consultar</button>
+  </form>
+  <p class="assistant-note">Las consultas y los datos relevantes del inventario se envían a Groq para generar la respuesta. No se pueden realizar cambios en el stock desde este asistente.</p>
+</section>
+
+<script>
+  (function () {
+    var form = document.getElementById('assistantForm');
+    var input = document.getElementById('assistantQuestion');
+    var submit = document.getElementById('assistantSubmit');
+    var messages = document.getElementById('assistantMessages');
+    var historial = [];
+
+    function addMessage(text, type, items) {
+      var article = document.createElement('div');
+      article.className = 'chat-message ' + type + '-message';
+      var content = document.createElement('div');
+      var paragraph = document.createElement('p');
+      paragraph.textContent = text;
+      content.appendChild(paragraph);
+      article.appendChild(content);
+      messages.appendChild(article);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      var pregunta = input.value.trim();
+      if (!pregunta || submit.disabled) return;
+      addMessage(pregunta, 'user');
+      input.value = '';
+      submit.disabled = true;
+      submit.textContent = 'Consultando…';
+      try {
+        var historialEnviado = historial.slice(-10);
+        var response = await fetch('/asistente/consultar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pregunta: pregunta, historial: historialEnviado })
+        });
+        var resultado = await response.json();
+        if (!response.ok) throw new Error(resultado.error || 'No se pudo completar la consulta.');
+        addMessage(resultado.mensaje, 'assistant');
+        historial = historialEnviado.concat([
+          { role: 'user', content: pregunta },
+          { role: 'assistant', content: resultado.mensaje }
+        ]).slice(-10);
+      } catch (error) {
+        addMessage(error.message || 'No se pudo conectar con el asistente.', 'assistant');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Consultar';
+        input.focus();
+      }
+    });
+
+    document.querySelectorAll('.suggestion-chip').forEach(function (button) {
+      button.addEventListener('click', function () {
+        input.value = button.textContent;
+        form.requestSubmit();
+      });
+    });
+  })();
+</script>
+
+<%- include('partials/footer') %>
