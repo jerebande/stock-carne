@@ -17,6 +17,7 @@ Aplicación web para gestionar productos, categorías, proveedores, movimientos 
    ```
 
 3. Configurar `.env` con las credenciales de MySQL y reemplazar `SESSION_SECRET` por un valor aleatorio largo antes de exponer la aplicación. En producción es obligatorio configurar un secreto estable.
+   Si la aplicación está detrás de un proxy HTTPS del hosting, Express confía en el proxy inmediato para poder emitir correctamente las cookies de sesión seguras.
 
 4. (Opcional) Crear la cuenta de demostración `admin` con contraseña inicial `admin123`:
    ```sh

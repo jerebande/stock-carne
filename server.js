@@ -25,6 +25,10 @@ if (!sessionSecret) {
   throw new Error('Definí SESSION_SECRET en el entorno antes de iniciar en producción.');
 }
 
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
