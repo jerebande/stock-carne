@@ -21,8 +21,12 @@
       <div class="form-group">
         <label>Unidad</label>
         <select name="unidad">
-          <option value="kg" <%= producto && producto.unidad === 'kg' ? 'selected' : '' %>>Kilogramos (kg)</option>
-          <option value="unidad" <%= producto && producto.unidad === 'unidad' ? 'selected' : '' %>>Unidad</option>
+          <% if (producto && !unidadesNegocio.some(([valor]) => valor === producto.unidad)) { %>
+            <option value="<%= producto.unidad %>" selected><%= producto.unidad %> (unidad actual)</option>
+          <% } %>
+          <% unidadesNegocio.forEach(([valor, etiqueta]) => { %>
+            <option value="<%= valor %>" <%= producto ? (producto.unidad === valor ? 'selected' : '') : (valor === 'unidad' ? 'selected' : '') %>><%= etiqueta %></option>
+          <% }) %>
         </select>
       </div>
     </div>

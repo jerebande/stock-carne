@@ -3,21 +3,28 @@
 <div class="grid-stats">
   <div class="card stat">
     <div class="num"><%= total_productos %></div>
-    <div class="label">Productos activos</div>
+    <div class="label"><%= negocioConfig.etiqueta %> activos</div>
   </div>
   <div class="card stat">
     <div class="num"><%= bajoStock.length %></div>
-    <div class="label">Con stock bajo</div>
+    <div class="label">Con <%= negocioConfig.resumen %> bajo</div>
   </div>
   <div class="card stat">
     <div class="num">$<%= Number(valor_stock).toLocaleString('es-AR', {minimumFractionDigits: 2}) %></div>
-    <div class="label">Valor total en stock (costo)</div>
+    <div class="label">Valor total en <%= negocioConfig.resumen %> (costo)</div>
   </div>
+  <% stockPorUnidad.forEach(item => { %>
+    <% const unidad = unidadesNegocio.find(([valor]) => valor === item.unidad); %>
+    <div class="card stat stat-unidad">
+      <div class="num"><%= Number(item.cantidad).toLocaleString('es-AR', {maximumFractionDigits: 2}) %></div>
+      <div class="label">En stock · <%= unidad ? unidad[1] : item.unidad %></div>
+    </div>
+  <% }) %>
 </div>
 
 <div class="card">
   <div class="toolbar">
-    <h3 style="margin:0;">⚠️ Productos con stock bajo</h3>
+    <h3 style="margin:0;">⚠️ <%= negocioConfig.etiqueta %> con stock bajo</h3>
     <a href="/movimientos/nuevo" class="btn">+ Nuevo movimiento</a>
   </div>
   <% if (bajoStock.length === 0) { %>
@@ -25,12 +32,12 @@
   <% } else { %>
     <div class="table-scroll"><table>
       <thead>
-        <tr><th>Producto</th><th>Categoría</th><th>Stock actual</th><th>Mínimo</th></tr>
+        <tr><th><%= negocioConfig.etiqueta %></th><th>Categoría</th><th>Stock actual</th><th>Mínimo</th></tr>
       </thead>
       <tbody>
         <% bajoStock.forEach(p => { %>
           <tr>
-            <td data-label="Producto"><strong><%= p.nombre %></strong></td>
+            <td data-label="<%= negocioConfig.etiqueta %>"><strong><%= p.nombre %></strong></td>
             <td data-label="Categoría"><%= p.categoria_nombre || '-' %></td>
             <td data-label="Stock actual"><span class="badge bajo"><%= p.stock_actual %> <%= p.unidad %></span></td>
             <td data-label="Mínimo"><%= p.stock_minimo %> <%= p.unidad %></td>

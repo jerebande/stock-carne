@@ -54,6 +54,18 @@ const Producto = {
     return total;
   },
 
+  async stockPorUnidad(ownerId) {
+    const [rows] = await pool.query(
+      `SELECT unidad, COALESCE(SUM(stock_actual), 0) AS cantidad
+       FROM productos
+       WHERE activo = 1 AND owner_id = ?
+       GROUP BY unidad
+       ORDER BY unidad`,
+      [ownerId]
+    );
+    return rows;
+  },
+
   async valorTotalStock(ownerId) {
     const [[{ valor }]] = await pool.query(
       'SELECT COALESCE(SUM(stock_actual * precio_costo), 0) AS valor FROM productos WHERE activo = 1 AND owner_id = ?',

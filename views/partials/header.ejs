@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#8c1c13">
-  <title>Control de Stock - Carnicería</title>
+  <title>Control de Stock - <%= negocioConfig.nombre %></title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="tema-<%= negocioConfig.tema %>">
 <% if (usuario) { %>
   <div class="navbar">
-    <a href="/" class="brand">🥩 <span>Carnicería - Stock</span></a>
+    <a href="/" class="brand"><%= negocioConfig.icono %> <span><%= negocioConfig.nombre %> - Stock</span></a>
     <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-controls="navMenu" aria-expanded="false">☰</button>
     <nav id="navMenu">
       <a href="/" class="<%= path === '/' ? 'active' : '' %>">Panel</a>
@@ -22,6 +22,14 @@
         <a href="/categorias" class="<%= path.startsWith('/categorias') ? 'active' : '' %>">Categorías</a>
         <a href="/proveedores" class="<%= path.startsWith('/proveedores') ? 'active' : '' %>">Proveedores</a>
       <% } %>
+      <form action="/configuracion/rubro" method="POST" class="selector-negocio">
+        <label class="sr-only" for="rubroSelect">Rubro</label>
+        <select id="rubroSelect" name="negocio" onchange="this.form.submit()" aria-label="Seleccionar rubro de negocio">
+          <% Object.entries(opcionesNegocio).forEach(([key, opcion]) => { %>
+            <option value="<%= key %>" <%= negocio === key ? 'selected' : '' %>><%= opcion.nombre %></option>
+          <% }) %>
+        </select>
+      </form>
       <span class="usuario-info" title="<%= usuario.nombre %>">👤 <%= usuario.nombre %></span>
       <form action="/logout" method="POST" class="inline">
         <button type="submit" class="btn-salir">Salir</button>

@@ -1,6 +1,6 @@
-# Control de Stock - Carnicería
+# Control de Stock
 
-Aplicación web para gestionar productos, categorías, proveedores, movimientos de stock, reportes y alertas para varias cuentas independientes.
+Aplicación web para gestionar productos, categorías, proveedores, movimientos de stock, reportes y alertas para varias cuentas independientes. El rubro se puede seleccionar en la barra de navegación y adapta el tema visual, las etiquetas y las unidades sugeridas para cargar productos.
 
 **Stack:** Node.js + Express + EJS + MySQL + sesiones (mysql2, bcryptjs, express-session).
 
@@ -66,8 +66,9 @@ El asistente solo consulta información de inventario de la cuenta autenticada. 
 
 ## Funcionalidades
 
-- **Panel principal:** total de productos, alertas de stock bajo, valor del stock y últimos movimientos.
-- **Productos:** alta, edición, baja lógica, búsqueda y stock mínimo configurable.
+- **Panel principal:** total de productos, alertas de stock bajo, valor del stock, cantidades agrupadas por unidad y últimos movimientos.
+- **Rubros:** carnicería, kiosco, mercado, farmacia, e-commerce, logística, industria, supermercado/almacén, ropa y accesorios, y salud/laboratorio; cada rubro tiene un color propio y unidades sugeridas.
+- **Productos:** alta, edición, baja lógica, búsqueda y stock mínimo configurable. Las unidades sugeridas dependen del rubro (por ejemplo, litros, mililitros, packs y cajas para kioscos y supermercados).
 - **Movimientos:** entradas, salidas, mermas y ajustes, con actualización transaccional del stock.
 - **Categorías y proveedores:** gestión privada por cuenta.
 - **Reportes:** filtros por fechas, producto y tipo de movimiento.
